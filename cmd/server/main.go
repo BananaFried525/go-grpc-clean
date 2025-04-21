@@ -8,6 +8,7 @@ import (
 	persistenceAdapter "go-grpc-clean/internal/adapter/persistence"
 	"go-grpc-clean/internal/infra/persistence"
 	proto "go-grpc-clean/internal/pb"
+	"go-grpc-clean/internal/pkg/config"
 	"go-grpc-clean/internal/usecase"
 
 	"google.golang.org/grpc"
@@ -15,6 +16,8 @@ import (
 )
 
 func main() {
+	config.Init()
+
 	db := persistence.NewGormDB()
 	repo := persistenceAdapter.NewUserGormRepo(db)
 	service := usecase.NewUserUseCase(repo)

@@ -3,7 +3,9 @@
 package persistence
 
 import (
+	"fmt"
 	"go-grpc-clean/internal/adapter/persistence"
+	"go-grpc-clean/internal/pkg/config"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -11,17 +13,18 @@ import (
 )
 
 func NewGormDB() *gorm.DB {
-	dsn := "host=localhost user=postgres password=postgres dbname=clean port=5432 sslmode=disable"
+	config := config.GetDBConfig()
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", config.Host, config.User, config.Password, config.DBName, config.Port)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 
-	// Auto migrate model (เฉพาะตอน dev)
 	err = db.AutoMigrate(&persistence.UserModel{})
 	if err != nil {
 		log.Fatalf("failed to migrate database: %v", err)
 	}
 
+	log.Println("connected to database")
 	return db
 }
