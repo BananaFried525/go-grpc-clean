@@ -1,0 +1,29 @@
+
+syntax = "proto3";
+
+package grpc;
+
+option go_package = "go-grpc-clean/internal/adapter/grpc";
+
+message User {
+	int32 id = 1;
+	string name = 2;
+	string email = 3;
+}
+
+message GetUserRequest {
+	int32 id = 1;
+}
+
+message CreateUserRequest {
+	User user = 1;
+}
+
+message UserResponse {
+	User user = 1;
+}
+
+service UserService {
+	rpc GetUser(GetUserRequest) returns (UserResponse);
+	rpc CreateUser(CreateUserRequest) returns (UserResponse);
+}
