@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	repository "go-grpc-clean/internal/domain/repository"
 	domain "go-grpc-clean/internal/domain/user"
 
@@ -17,6 +18,10 @@ func NewUserUseCase(r repository.UserRepository) domain.IUserRepository {
 }
 
 func (s *UserUseCaseImpl) GetUser(id string) (*domain.User, error) {
+	if id == "" {
+		return nil, errors.New("id_is_empty")
+	}
+
 	return &domain.User{
 		ID:    "123",
 		Name:  "Alice",
