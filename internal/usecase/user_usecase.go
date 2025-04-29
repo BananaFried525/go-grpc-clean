@@ -1,22 +1,52 @@
 package usecase
 
 import (
-	repository "go-grpc-clean/internal/domain/persistence"
+	"context"
+	repository "go-grpc-clean/internal/domain/repository"
 	domain "go-grpc-clean/internal/domain/user"
+
+	"github.com/google/uuid"
 )
 
-type UserUseCase struct {
+type UserUseCaseImpl struct {
 	repo repository.UserRepository
 }
 
-func NewUserUseCase(r repository.UserRepository) *UserUseCase {
-	return &UserUseCase{repo: r}
+func NewUserUseCase(r repository.UserRepository) domain.IUserRepository {
+	return &UserUseCaseImpl{repo: r}
 }
 
-func (s *UserUseCase) GetUser(id int32) (*domain.User, error) {
-	return nil, nil
+func (s *UserUseCaseImpl) GetUser(id string) (*domain.User, error) {
+	return &domain.User{
+		ID:    "123",
+		Name:  "Alice",
+		Email: "alice@example.com",
+	}, nil
 }
 
-func (s *UserUseCase) CreateUser(u *domain.User) error {
-	return nil
+func (s *UserUseCaseImpl) CreateUser(u *domain.DraftCreateUser) (*domain.CreateUser, error) {
+	ctx := context.Background()
+
+	// gen uid for user
+	uid := uuid.New().String()
+
+	user, error := s.repo.Create(ctx, &repository.UserModel{
+		ID:        "",
+		Uid:       uid,
+		Name:      u.Name,
+		Email:     u.Email,
+		AvatarUrl: "",
+	})
+
+	if error != nil {
+		return nil, error
+	}
+
+	return &domain.CreateUser{
+		ID:        user.ID,
+		Name:      user.Name,
+		Email:     user.Email,
+		Uid:       user.Uid,
+		AvatarUrl: user.AvatarUrl,
+	}, nil
 }

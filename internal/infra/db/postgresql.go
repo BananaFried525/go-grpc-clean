@@ -1,10 +1,9 @@
 // internal/infra/persistence/db.go
 
-package persistence
+package database
 
 import (
 	"fmt"
-	"go-grpc-clean/internal/adapter/persistence"
 	"go-grpc-clean/internal/pkg/config"
 	"log"
 
@@ -18,11 +17,6 @@ func NewGormDB() *gorm.DB {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
-	}
-
-	err = db.AutoMigrate(&persistence.UserModel{})
-	if err != nil {
-		log.Fatalf("failed to migrate database: %v", err)
 	}
 
 	log.Println("connected to database")

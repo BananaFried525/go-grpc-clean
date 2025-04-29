@@ -5,8 +5,8 @@ import (
 	"net"
 
 	grpcAdapter "go-grpc-clean/internal/adapter/grpc"
-	persistenceAdapter "go-grpc-clean/internal/adapter/persistence"
-	"go-grpc-clean/internal/infra/persistence"
+	database "go-grpc-clean/internal/infra/db"
+	"go-grpc-clean/internal/infra/repository"
 	proto "go-grpc-clean/internal/pb"
 	"go-grpc-clean/internal/pkg/config"
 	"go-grpc-clean/internal/usecase"
@@ -18,11 +18,11 @@ import (
 func main() {
 	config.Init()
 
-	db := persistence.NewGormDB()
-	repo := persistenceAdapter.NewUserGormRepo(db)
-	service := usecase.NewUserUseCase(repo)
+	dbConnection := database.NewGormDB()
+	userRepository := repository.NewUserGormRepo(dbConnection)
+	userUsercase := usecase.NewUserUseCase(userRepository)
 
-	grpcServer := grpcAdapter.NewGRPCServer(service)
+	grpcServer := grpcAdapter.NewGRPCServer(userUsercase)
 
 	listener, err := net.Listen("tcp", ":50051")
 	if err != nil {

@@ -3,20 +3,27 @@ syntax = "proto3";
 
 package grpc;
 
-option go_package = "go-grpc-clean/internal/adapter/grpc";
+option go_package = "go-grpc-clean/internal/pb";
 
 message User {
-	int32 id = 1;
-	string name = 2;
-	string email = 3;
+	string id = 1;
+    string uuid = 2;
+	string name = 3;
+	string email = 4;
+    string avatarUrl = 5;
+}
+
+message DraftUser {
+    string name = 1;
+    string email = 2;
 }
 
 message GetUserRequest {
-	int32 id = 1;
+	string id = 1;
 }
 
 message CreateUserRequest {
-	User user = 1;
+	DraftUser user = 1;
 }
 
 message UserResponse {
