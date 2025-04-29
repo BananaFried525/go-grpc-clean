@@ -3,15 +3,21 @@ package usecase_test
 import (
 	"testing"
 
+	domain "go-grpc-clean/internal/domain/user"
 	"go-grpc-clean/internal/usecase"
 	"go-grpc-clean/internal/usecase/mocks"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetUser_Success(t *testing.T) {
+func setupUserUseCase() (domain.IUserRepository, *mocks.UserRepository) {
 	repo := new(mocks.UserRepository)
 	userUseCase := usecase.NewUserUseCase(repo)
+	return userUseCase, repo
+}
+
+func TestGetUser_Success(t *testing.T) {
+	userUseCase, _ := setupUserUseCase()
 
 	user, err := userUseCase.GetUser("123")
 
@@ -20,9 +26,8 @@ func TestGetUser_Success(t *testing.T) {
 	assert.Equal(t, "123", user.ID)
 }
 
-func TestGetUser_Fail_EmptyID(t *testing.T) {
-	repo := new(mocks.UserRepository)
-	userUseCase := usecase.NewUserUseCase(repo)
+func TestGetUser_Failure_EmptyID(t *testing.T) {
+	userUseCase, _ := setupUserUseCase()
 
 	user, err := userUseCase.GetUser("")
 
